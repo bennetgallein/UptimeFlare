@@ -1,6 +1,6 @@
 name: Maintenance Announcement
 description: Create a scheduled maintenance announcement
-title: ''
+title: 'New Maintenance'
 labels: ['maintenance']
 body:
   - type: textarea
