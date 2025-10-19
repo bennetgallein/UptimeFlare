@@ -1,0 +1,51 @@
+name: Sync Maintenance Issues
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled]
+  workflow_dispatch:
+
+jobs:
+  sync-maintenances:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'maintenance')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Sync maintenances from GitHub Issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          node scripts/sync-from-github.js \
+            --commit \
+            --post-comments \
+            --trigger-issue=${{ github.event.issue.number || '' }}
+
+      - name: Push changes
+        run: |
+          if ! git diff --quiet HEAD~1 -- maintenances.ts; then
+            git push
+            echo "✅ Pushed maintenance configuration changes"
+          else
+            echo "ℹ️ No changes to push"
+          fi
