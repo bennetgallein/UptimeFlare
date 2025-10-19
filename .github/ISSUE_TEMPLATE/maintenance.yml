@@ -1,0 +1,57 @@
+name: Maintenance Announcement
+description: Create a scheduled maintenance announcement
+title: ''
+labels: ['maintenance']
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Maintenance Description
+      description: |
+        Describe the maintenance work. You can include special keywords:
+
+        - `start: 2024-12-20T02:00:00+00:00` - Start time (ISO 8601 format)
+        - `end: 2024-12-20T06:00:00+00:00` - End time (optional)
+        - `color: #ff6b35` - Custom color (optional, hex format)
+
+        **Labels:** Add monitor IDs as labels to specify which monitors are affected. No labels = all monitors affected.
+      placeholder: |
+        We will be performing server maintenance including:
+        - Database updates
+        - Security patches
+        - Performance optimizations
+
+        start: 2024-12-20T02:00:00+00:00
+        end: 2024-12-20T06:00:00+00:00
+        color: #ff6b35
+
+        Expected downtime: 4 hours
+        Contact: ops@example.com for questions
+    validations:
+      required: true
+
+  - type: textarea
+    id: instructions
+    attributes:
+      label: Instructions
+      value: |
+        **How to use this template:**
+
+        1. **Title**: Enter your maintenance title above
+        2. **Description**: Fill out the description above with maintenance details
+        3. **Labels**: After creating the issue, add monitor ID labels (e.g., `foo_monitor`, `test_tcp_monitor`)
+        4. **Keywords**: Use `start:`, `end:`, and `color:` keywords in the description for scheduling
+
+        **Monitor Labels:**
+        - `foo_monitor` - My API Monitor
+        - `test_tcp_monitor` - Example TCP Monitor
+        - No labels = affects all monitors
+
+        **Color Examples:**
+        - `color: #fbbf24` - Yellow (warning)
+        - `color: #3b82f6` - Blue (info)
+        - `color: #f97316` - Orange (caution)
+        - `color: #ef4444` - Red (critical)
+      render: markdown
+    validations:
+      required: false
